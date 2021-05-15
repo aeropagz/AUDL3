@@ -39,6 +39,11 @@ int printall(enum DIRECTION direction);
 
 int main(void) {
     put_entry(1, 1);
+    put_entry(2, 2);
+    put_entry(3, 3);
+    put_entry(4, 4);
+    put_entry(5, 5);
+    del_entry(2);
     printf("size: %d\n", get_anzentries());
     return 0;
 }
@@ -72,6 +77,7 @@ int put_entry(int position, int aktdata) {
         newEntry->next = *tracer;
         *tracer = newEntry;
     }
+    return 0;
 }
 
 int printall(enum DIRECTION direction) {
@@ -114,7 +120,7 @@ int del_list(void) {
 *         negative Werte = Fehler
 */
 int del_entry(int position) {
-    if (position < 0)
+    if (position <= 0)
         return -1;
     int i = 0;
     listEntry **tracer = &start;
@@ -125,7 +131,7 @@ int del_entry(int position) {
     }
     if (!(*tracer))
         return -1;
-    old = (*tracer)->next;
+    old = *tracer;
     *tracer = (*tracer)->next;
     free(old);
     return 0;
@@ -144,7 +150,7 @@ int get_anzentries(void) {
         tracer = &(*tracer)->next;
         i++;
     }
-    return i - 1;
+    return i;
 }
 
 
@@ -161,7 +167,7 @@ int find_entry(int value) {
         i++;
     }
     if (*tracer)
-        return i - 1;
+        return i;
     else
         return 0;
 }

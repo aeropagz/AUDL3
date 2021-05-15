@@ -43,13 +43,18 @@ int main(void) {
     put_entry(3, 3);
     put_entry(4, 4);
     put_entry(5, 5);
-    del_entry(2);
+    put_entry(5, 6);
+    put_entry(5, 7);
+
+    printall(FORWARD);
+
+    printf("Position: %d\n", find_entry(7));
     printf("size: %d\n", get_anzentries());
     return 0;
 }
 
 int put_entry(int position, int aktdata) {
-    int i = 0;
+    int i = 1;
     listEntry **tracer = &start;
     listEntry *newEntry = create_entry(aktdata);
     if (newEntry == NULL)
@@ -63,6 +68,8 @@ int put_entry(int position, int aktdata) {
     } else if (get_anzentries() == 0 && position == 1) {
         return put_entry(0, aktdata);
     } else if (position < 0)
+        return -1;
+    else if(position > 200000000)
         return -1;
 
     while ((i < position) && (*tracer)) {
@@ -81,7 +88,7 @@ int put_entry(int position, int aktdata) {
 }
 
 int printall(enum DIRECTION direction) {
-    int i = 0;
+    int i = 1;
     listEntry **tracer = &start;
     if (direction == FORWARD) {
         while (*tracer) {
@@ -160,7 +167,7 @@ int get_anzentries(void) {
 *         negative Werte = Fehler
 */
 int find_entry(int value) {
-    int i = 0;
+    int i = 1;
     listEntry **tracer = &start;
     while (*tracer && (*tracer)->data != value) {
         tracer = &(*tracer)->next;
@@ -169,6 +176,6 @@ int find_entry(int value) {
     if (*tracer)
         return i;
     else
-        return 0;
+        return -1;
 }
 

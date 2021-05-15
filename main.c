@@ -31,17 +31,15 @@ int del_entry(int position);
 
 int find_entry(int value);
 
-void del_list(void);
+int del_list(void);
 
 int get_anzentries(void);
 
 int printall(enum DIRECTION direction);
 
 int main(void) {
-    put_entry(0, 1);
-    put_entry(1, 2);
-    put_entry(8, 3);
-    printall(FORWARD);
+    put_entry(1, 1);
+    printf("size: %d\n", get_anzentries());
     return 0;
 }
 
@@ -49,13 +47,18 @@ int put_entry(int position, int aktdata) {
     int i = 0;
     listEntry **tracer = &start;
     listEntry *newEntry = create_entry(aktdata);
+    if (newEntry == NULL)
+        return -1;
 
     // if postion is 0 put entry on start
     if (position == 0) {
         newEntry->next = *tracer;
         *tracer = newEntry;
         return 0;
-    }
+    } else if (get_anzentries() == 0 && position == 1) {
+        return put_entry(0, aktdata);
+    } else if (position < 0)
+        return -1;
 
     while ((i < position) && (*tracer)) {
         tracer = &(*tracer)->next;
@@ -81,24 +84,28 @@ int printall(enum DIRECTION direction) {
             tracer = &(*tracer)->next;
         }
     }
+    return 0;
 }
 
 listEntry *create_entry(int data) {
     listEntry *newp;
     newp = (listEntry *) malloc(sizeof(listEntry));
+    if (newp == NULL)
+        return NULL;
     newp->data = data;
     newp->next = NULL;
     return newp;
 }
 
-void del_list(void) {
+int del_list(void) {
     listEntry **tracer = &start;
-    listEntry *old = start;
+    listEntry *old;
     while (*tracer) {
-        old = tracer;
-        tracer = &(*tracer)->next;
+        old = *tracer;
+        *tracer = (*tracer)->next;
         free(old);
     }
+    return 0;
 }
 
 /* Unterprogramm zum Loeschen eines Nutzdatenelements
@@ -107,6 +114,8 @@ void del_list(void) {
 *         negative Werte = Fehler
 */
 int del_entry(int position) {
+    if (position < 0)
+        return -1;
     int i = 0;
     listEntry **tracer = &start;
     listEntry *old;
@@ -129,11 +138,13 @@ int del_entry(int position) {
 int get_anzentries(void) {
     int i = 0;
     listEntry **tracer = &start;
+    if (!*tracer)
+        return 0;
     while (*tracer) {
         tracer = &(*tracer)->next;
         i++;
     }
-    return i;
+    return i - 1;
 }
 
 
@@ -150,7 +161,7 @@ int find_entry(int value) {
         i++;
     }
     if (*tracer)
-        return i;
+        return i - 1;
     else
         return 0;
 }
